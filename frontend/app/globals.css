@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255; */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0; */
+  }
+}
+
+body {
+  /* color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb)); */
+}
+
+@layer utilities {
+  /* .text-balance {
+    text-wrap: balance;
+  } */
+}
+
+.carousel-3D-swiper-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  color: #000;
+  margin: 0;
+  padding: 0;
+  max-width: 1200px;
+  margin: auto;
+  overflow: hidden;
+  min-height: 500px;
+}
+
+.carousel-3D-swiper-title {
+  text-align: center;
+  font-size: 3rem;
+  color: orangered;
+}
+
+.carousel-3D-swiper .swiper-slide {
+  position: relative;
+}
+
+.carousel-3D-swiper .image-wrapper {
+  overflow: hidden;
+  max-height: 225px;
+}
+
+.carousel-3D-swiper .image-wrapper img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: 225px;
+  -o-object-fit: cover;
+  object-fit: cover;
+  border-radius: 8px;
+  -webkit-box-reflect: below 5px -webkit-linear-gradient(bottom, rgba(
+          255,
+          0,
+          0,
+          0.1
+        )
+        0%, transparent 32px, transparent 100%);
+}
+
+.details {
+  padding: 25px 20px;
+  font-weight: 600;
+  text-align: center;
+  background-color: #fff;
+}
+
+.details span {
+  display: block;
+  font-size: 16px;
+  color: #f44336;
+}
+
+.details h3 {
+  margin: 0;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.details p {
+  margin: 8px 0 0;
+  opacity: 0.65;
+  font-size: 14px;
+  font-weight: 500;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.carousel-3D-swiper-section .swiper-pagination-bullet {
+  margin: 0 4px;
+  width: 16px;
+  height: 16px;
+  z-index: 50;
+}
+
+.carousel-3D-swiper-section .swiper-pagination-bullet-active {
+  opacity: 1;
+  background: orange;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
+}

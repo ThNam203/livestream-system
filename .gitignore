@@ -1,6 +1,7 @@
 monitor/prometheus/promtool
 monitor/prometheus/data
 monitor/prometheus/prometheus
+monitor/prometheus/node_exporter
 storage
 
 servers/*
