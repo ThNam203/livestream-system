@@ -1,6 +1,7 @@
-prometheus-2.51.2/promtool
-prometheus-2.51.2/data
-prometheus-2.51.2/prometheus
+monitor/prometheus/promtool
+monitor/prometheus/data
+monitor/prometheus/prometheus
+storage
 
-transcode_servers/*
-!transcode_servers/*.*
+servers/*
+!servers/*.*

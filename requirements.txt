@@ -1,0 +1,2 @@
+pyrtmp==0.3.0
+bitstring==4.1.4

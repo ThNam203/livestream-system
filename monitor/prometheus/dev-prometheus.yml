@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 15s 
+
+scrape_configs:
+  - job_name: 'load-balancer'
+    static_configs:
+      - targets: ['localhost:8405']
+
+  - job_name: "cdn"
+    metrics_path: '/status/format/prometheus'
+    static_configs:
+      - targets: ["localhost:8080", "localhost:8081"]
+  
+  - job_name: node
+    static_configs:
+      - targets: ['localhost:9100']

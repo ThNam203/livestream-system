@@ -1,0 +1,31 @@
+resolver 127.0.0.1 ipv6=off;
+
+init_by_lua_block {
+	local load_balancer = require "load_balancer"
+	load_balancer.set_up_edges_list()
+}
+
+upstream edge {
+	server 0.0.0.1; # place holder
+	balancer_by_lua_block {
+		local load_balancer = require "load_balancer"
+		load_balancer.set_proper_server()
+	}
+	keepalive 60;
+}
+
+server {
+	listen 8888;
+
+	location / {
+		access_by_lua_block {
+			local load_balancer = require "load_balancer"
+			load_balancer.resolve_name_for_upstream()
+		}
+
+	proxy_pass http://edge;
+	add_header X-Edge LoadBalancer;
+	}
+
+	include conf.d/sub_config.d/vts_location.conf;
+}
