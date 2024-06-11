@@ -1,0 +1,9 @@
+services:
+  livestream:
+    build: .
+    ports:
+      - "3000:3000"
+      - "1935:1935"
+      - "8888:8888"
+    volumes:
+      - /home/sen1or/Desktop/livestream-system/storage:/var/www
