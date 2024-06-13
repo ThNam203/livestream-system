@@ -54,7 +54,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         var cors = new CorsConfiguration();
         cors.setAllowCredentials(true);
-        cors.addAllowedOrigin("http://localhost:3000");
+        cors.addAllowedOrigin("*");
         cors.addAllowedHeader("*");
         cors.addAllowedMethod("*");
         cors.setMaxAge(3600L);
