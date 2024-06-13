@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/toast";
 import { User } from "@/entities/user";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setProfile, updateStreamKey } from "@/redux/slices/profile";
+import { setProfile } from "@/redux/slices/profile";
 import UserService, { UpdateProfileProps } from "@/services/userService";
 import { cn } from "@/utils/cn";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,6 +23,9 @@ import { ReactNode, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ZodType, z } from "zod";
 import { Radio, RadioGroup } from "@nextui-org/react";
+import { Channel } from "@/entities/channel";
+import { setChannel, updateStreamKey } from "@/redux/slices/channel";
+import ChannelService from "@/services/channelService";
 
 export type UpdateProfileFormData = {
   username: string;
@@ -77,8 +80,9 @@ const updateChannelSchema: ZodType<UpdateChannelFormData> = z.object({
 });
 
 export default function SettingPage() {
-  const dispatch = useAppDispatch();
-  const thisUser: User | null = useAppSelector((state) => state.profile.user);
+  const [thisUser, setThisUser] = useState<User>();
+  const [thisChannel, setThisChannel] = useState<Channel>();
+
   const [selectedTab, setSelectedTab] = useState("Profile");
   const [avatarUrl, setAvatarUrl] = useState<string>();
   const [bannerUrl, setBannerUrl] = useState<string>();
@@ -143,7 +147,7 @@ export default function SettingPage() {
     };
     await UserService.updateProfile(profileToUpdate)
       .then((res) => {
-        dispatch(setProfile(res));
+        setThisUser(res);
         showSuccessToast("Profile updated successfully");
       })
       .catch((err) => showErrorToast(err));
@@ -158,52 +162,64 @@ export default function SettingPage() {
   };
 
   const handleUpdateChannel = (data: UpdateChannelFormData) => {
-    UserService.updateChannel(data)
+    ChannelService.updateChannel(data)
       .then(() => showSuccessToast("Channel updated successfully"))
       .catch((err) => showErrorToast(err));
   };
 
   const handleResetStreamKey = async () => {
-    await UserService.updateStreamKey()
+    await ChannelService.updateStreamKey()
       .then((res) => {
-        dispatch(updateStreamKey(res.data));
-        showSuccessToast("Stream key reset successfully");
+        if (thisChannel) {
+          setThisChannel({ ...thisChannel, streamKey: res });
+          showSuccessToast("Stream key reset successfully");
+        }
       })
       .catch((err) => showErrorToast(err));
   };
 
-  const initProfile = () => {
-    if (thisUser) {
-      updateProfileForm.setValue("username", thisUser.username);
-      updateProfileForm.setValue("email", thisUser.email);
-      updateProfileForm.setValue("bio", thisUser.bio);
-      updateProfileForm.setValue("birth", thisUser.birth);
-    }
+  const initProfile = (user: User) => {
+    updateProfileForm.setValue("username", user.username);
+    updateProfileForm.setValue("email", user.email);
+    updateProfileForm.setValue("bio", user.bio);
+    updateProfileForm.setValue("birth", user.birth);
   };
 
-  const initChannel = () => {
-    if (thisUser) {
-      updateChannelForm.setValue("channelName", thisUser.channel.channelName);
-      updateChannelForm.setValue("title", thisUser.channel.title);
-      updateChannelForm.setValue("tags", thisUser.channel.tags);
-      updateChannelForm.setValue("enableLLHLS", thisUser.channel.enableLLHLS);
-    }
+  const initChannel = (channel: Channel) => {
+    updateChannelForm.setValue("channelName", channel.channelName);
+    updateChannelForm.setValue("title", channel.title);
+    updateChannelForm.setValue("tags", channel.tags);
+    updateChannelForm.setValue("enableLLHLS", channel.enableLLHLS);
   };
 
   useEffect(() => {
+    const fetchChannel = async () => {
+      await ChannelService.getChannel().then((res) => {
+        console.log(res);
+        setThisChannel(res);
+      });
+    };
+    const fetchUser = async () => {
+      await UserService.getInfo().then((res) => {
+        setThisUser(res);
+      });
+    };
     const fetchData = async () => {
-      await UserService.getInfo()
-        .then((res) => {
-          dispatch(setProfile(res));
-        })
+      await Promise.all([fetchChannel(), fetchUser()])
+        .then(() => {})
         .catch((err) => showErrorToast(err));
     };
+    fetchData();
+  }, []);
 
-    if (!thisUser) fetchData();
-
-    initProfile();
-    initChannel();
+  useEffect(() => {
+    if (thisUser) initProfile(thisUser);
   }, [thisUser]);
+
+  useEffect(() => {
+    if (thisChannel) initChannel(thisChannel);
+    console.log("use effect", thisChannel);
+  }, [thisChannel]);
 
   return (
     <div className="w-full h-screen flex flex-col p-8 pb-20 overflow-y-scroll">
@@ -430,7 +446,7 @@ export default function SettingPage() {
                     <div className="relative flex-1">
                       <Input
                         type="password"
-                        value={thisUser ? thisUser.channel.streamKey : ""}
+                        value={thisChannel ? thisChannel.streamKey : ""}
                         onChange={() => {
                           return;
                         }}
@@ -442,7 +458,7 @@ export default function SettingPage() {
                       type="button"
                       onClick={() => {
                         navigator.clipboard.writeText(
-                          thisUser ? thisUser.channel.streamKey : ""
+                          thisChannel ? thisChannel.streamKey : ""
                         );
                         showDefaultToast("Copied to clipboard");
                       }}

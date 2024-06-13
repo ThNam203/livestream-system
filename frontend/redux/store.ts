@@ -1,11 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/auth";
 import profileReducer from "./slices/profile";
+import channelReducer from "./slices/channel";
+import { channel } from "diagnostics_channel";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     profile: profileReducer,
+    channel: channelReducer,
   },
 });
 

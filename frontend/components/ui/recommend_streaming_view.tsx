@@ -6,7 +6,7 @@ import {
   TagButton,
 } from "@/components/ui/buttons";
 import { Hover3DBox } from "@/components/ui/hover_3d_box";
-import { Streaming } from "@/entities/channel";
+import { Channel, Streaming } from "@/entities/channel";
 import { users } from "@/fakedata/leftbar";
 import { cn } from "@/utils/cn";
 import { ClassValue } from "clsx";
@@ -16,6 +16,11 @@ import streaming_img from "../../public/images/live_user_zackrawrr-440x248.jpg";
 import { socket_chat } from "@/socket_chat";
 import { useRouter } from "next/navigation";
 import { setCookie } from "cookies-next";
+import UserService from "@/services/userService";
+import { setChannel } from "@/redux/slices/channel";
+import { useAppDispatch } from "@/redux/hooks";
+import { showErrorToast } from "./toast";
+import ChannelService from "@/services/channelService";
 
 const ContentView = ({
   title,
@@ -58,18 +63,14 @@ const ContentView = ({
 const LiveChannelView = ({
   className,
   viewers,
-  title,
   category,
-  tags,
   channel,
   onClick,
 }: {
   className?: ClassValue;
   viewers: number;
-  title: string;
-  tags: string[];
+  channel: Channel;
   category?: string;
-  channel: string;
   onClick?: () => void;
 }) => {
   return (
@@ -77,16 +78,16 @@ const LiveChannelView = ({
       <Hover3DBox
         viewers={viewers}
         showViewer={true}
-        showStreaming={true}
+        showStreaming={channel.liveStreaming}
         imageSrc={streaming_img}
         className="h-[170px]"
         onClick={onClick}
       />
       <ContentView
-        channel={channel}
-        title={title}
+        channel={channel.channelName}
+        title={channel.title}
         category={category}
-        tags={tags}
+        tags={channel.tags}
       />
     </div>
   );
@@ -94,26 +95,33 @@ const LiveChannelView = ({
 
 const LiveChannelListView = ({
   limitView,
-  streamings,
+  channels,
 }: {
   limitView: number;
-  streamings: Streaming[];
+  channels: Channel[];
 }) => {
+  const dispatch = useAppDispatch();
   const router = useRouter();
-  const streamingData = streamings.slice(0, limitView);
+  const channelsToShow = channels.slice(0, limitView);
+
+  const handleStartStream = async (channel: Channel) => {
+    await ChannelService.startLiveStream(channel.streamKey)
+      .then((res) => {
+        dispatch(setChannel(res));
+      })
+      .catch((err) => showErrorToast(err));
+  };
+
   return (
     <div className="w-full grid xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 max-sm:grid-cols-1 gap-4">
-      {streamingData.map((streaming, idx) => {
-        const user = users.find((user) => user.id === streaming.ownerId);
+      {channelsToShow.map((channel, idx) => {
         return (
           <LiveChannelView
             key={idx}
-            channel={user ? user.username : ""}
-            title={streaming.title}
-            tags={streaming.tags}
+            channel={channel}
             viewers={120}
-            category={streaming.category}
             onClick={() => {
+              handleStartStream(channel);
               setCookie("isStreaming", JSON.stringify(false));
               router.push(`/livestreaming`);
             }}
@@ -126,20 +134,25 @@ const LiveChannelListView = ({
 
 const RecommendStreamingView = ({
   title,
-  streamings,
+  channels,
   limitView = 4,
   separate,
 }: {
   title: ReactNode;
-  streamings: Streaming[];
+  channels: Channel[];
   limitView?: number;
   separate: ReactNode;
 }) => {
   return (
-    <div className="flex flex-col gap-2 mt-8 pr-2">
+    <div
+      className={cn(
+        "flex flex-col gap-2 mt-8 pr-2",
+        channels.length === 0 && "hidden"
+      )}
+    >
       <div className="font-semibold text-lg">{title}</div>
-      <LiveChannelListView limitView={limitView} streamings={streamings} />
-      {separate}
+      <LiveChannelListView limitView={limitView} channels={channels} />
+      {channels.length > limitView && separate}
     </div>
   );
 };

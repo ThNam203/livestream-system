@@ -1,7 +1,7 @@
 import { Channel, Streaming } from "@/entities/channel";
 import { User } from "@/entities/user";
 
-const users: User[] = [
+const users = [
   {
     id: 1,
     avatar: "",
@@ -265,7 +265,113 @@ const streamings: Streaming[] = [
   },
 ];
 
-const channels: Channel[] = [
+//create fake user
+const fakeUser: User = {
+  id: 1,
+  avatar: "",
+  bio: "This is my bio",
+  username: "MrBeast",
+  email: "beast@gmail.com",
+  birth: new Date(),
+  phoneNumber: "02964827317",
+  password: "",
+};
+
+//create fake channels base on streamings above
+export const fakeChannels: Channel[] = [
+  {
+    id: 1,
+    channelName: "MrBeast",
+    streamKey: "",
+    user: fakeUser,
+    enableLLHLS: false,
+    liveStreaming: false,
+    tags: ["English", "Troll"],
+    title: "Ace on day 27",
+  },
+  {
+    id: 2,
+    channelName: "NatureExplorer",
+    streamKey: "",
+    user: fakeUser,
+    enableLLHLS: false,
+    liveStreaming: false,
+    tags: ["Travel", "Adventure"],
+    title: "Island Hopping Adventure",
+  },
+  {
+    id: 3,
+    channelName: "CodeGeek",
+    streamKey: "",
+    user: fakeUser,
+    enableLLHLS: false,
+    liveStreaming: false,
+    tags: ["Technology", "Coding"],
+    title: "Coding Marathon",
+  },
+  {
+    id: 4,
+    channelName: "FoodExplorer",
+    streamKey: "",
+    user: fakeUser,
+    enableLLHLS: false,
+    liveStreaming: false,
+    tags: ["Gaming", "Entertainment"],
+    title: "Epic Gaming Night",
+  },
+  {
+    id: 5,
+    channelName: "ArtisticSoul",
+    streamKey: "",
+    user: fakeUser,
+    enableLLHLS: false,
+    liveStreaming: false,
+    tags: ["English", "Troll"],
+    title: "Ace on day 27",
+  },
+  {
+    id: 6,
+    channelName: "MusicHarmony",
+    streamKey: "",
+    user: fakeUser,
+    enableLLHLS: false,
+    liveStreaming: false,
+    tags: ["Travel", "Adventure"],
+    title: "Island Hopping Adventure",
+  },
+  {
+    id: 7,
+    channelName: "FitExplorer",
+    streamKey: "",
+    user: fakeUser,
+    enableLLHLS: false,
+    liveStreaming: false,
+    tags: ["Technology", "Coding"],
+    title: "Coding Marathon",
+  },
+  {
+    id: 8,
+    channelName: "BookWanderer",
+    streamKey: "",
+    user: fakeUser,
+    enableLLHLS: false,
+    liveStreaming: false,
+    tags: ["Gaming", "Entertainment"],
+    title: "Epic Gaming Night",
+  },
+  {
+    id: 9,
+    channelName: "MrBeast",
+    streamKey: "",
+    user: fakeUser,
+    enableLLHLS: false,
+    liveStreaming: false,
+    tags: ["Gaming", "Entertainment"],
+    title: "Epic Gaming Night",
+  },
+];
+
+const channels = [
   {
     id: 1,
     ownerId: 1,

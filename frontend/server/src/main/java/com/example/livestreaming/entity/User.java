@@ -35,8 +35,7 @@ public class User implements UserDetails {
     @OneToMany (mappedBy = "user", fetch = FetchType.EAGER)
     private List<Token> token;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "channel_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
     private Channel channel;
 
     @Override

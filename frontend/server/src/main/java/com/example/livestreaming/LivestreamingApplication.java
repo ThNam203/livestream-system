@@ -9,5 +9,4 @@ public class LivestreamingApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(LivestreamingApplication.class, args);
 	}
-
 }

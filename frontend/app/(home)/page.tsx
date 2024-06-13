@@ -3,17 +3,32 @@
 import { CustomLink } from "@/components/ui/hover_3d_box";
 import { RecommendStreamingView } from "@/components/ui/recommend_streaming_view";
 import { Separate } from "@/components/ui/separate";
-import { streamings } from "@/fakedata/leftbar";
+import { Channel } from "@/entities/channel";
+import { fakeChannels } from "@/fakedata/leftbar";
+import { useAppDispatch } from "@/redux/hooks";
+import ChannelService from "@/services/channelService";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function HomePage() {
+  const dispatch = useAppDispatch();
   const [limitView, setLimitView] = useState<number[]>([4, 4, 4]);
+  const [liveChannels, setLiveChannels] = useState<Channel[]>([]);
   const handleShowMoreBtn = (index: number) => {
     const newLimitView = [...limitView];
     newLimitView[index] += 8;
     setLimitView(newLimitView);
   };
+
+  useEffect(() => {
+    const fetchLiveChannels = async () => {
+      await ChannelService.getAllLiveChannels().then((res) => {
+        setLiveChannels(res);
+      });
+    };
+
+    fetchLiveChannels();
+  }, []);
 
   return (
     <div className="flex flex-col w-full max-h-full p-8 overflow-y-scroll overflow-x-hidden">
@@ -26,7 +41,7 @@ export default function HomePage() {
             <CustomLink content="Live channels" /> we think you&#39;ll like
           </span>
         }
-        streamings={streamings}
+        channels={liveChannels}
         limitView={limitView[0]}
         separate={
           <div className="w-full flex flex-row items-center justify-between gap-4">
@@ -44,7 +59,7 @@ export default function HomePage() {
       />
       <RecommendStreamingView
         title={<span>Featured Clips We Think You&#39;ll Like</span>}
-        streamings={streamings}
+        channels={fakeChannels}
         limitView={limitView[1]}
         separate={
           <div className="w-full flex flex-row items-center justify-between gap-4">
@@ -67,7 +82,7 @@ export default function HomePage() {
             <CustomLink content="VTubers" />
           </span>
         }
-        streamings={streamings}
+        channels={fakeChannels}
         limitView={limitView[2]}
         separate={
           <div className="w-full flex flex-row items-center justify-between gap-4">

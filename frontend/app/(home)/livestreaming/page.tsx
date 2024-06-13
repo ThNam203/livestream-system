@@ -1,37 +1,43 @@
 "use client";
-import { IconButton, TextButton } from "@/components/ui/buttons";
 import {
   StreamingFrame,
   VideoInfo,
 } from "@/components/custom_react_player/streaming_frame";
-import { InputWithIcon } from "@/components/ui/input";
 import { LivestreamChatMessage } from "@/components/livestreaming/chat_message";
+import { IconButton, TextButton } from "@/components/ui/buttons";
+import { InputWithIcon } from "@/components/ui/input";
 import { showErrorToast } from "@/components/ui/toast";
+import { Channel } from "@/entities/channel";
 import { ChatMessageProps } from "@/entities/chatMessage";
 import { User } from "@/entities/user";
-import { useAppSelector } from "@/redux/hooks";
-import { setProfile } from "@/redux/slices/profile";
+import ChannelService from "@/services/channelService";
 import UserService from "@/services/userService";
 import socket from "@/socket";
 import { socket_chat } from "@/socket_chat";
 import { getCookie } from "cookies-next";
 import { format } from "date-fns";
 import { Smile } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 
 export default function Livestreaming() {
+  const dispatch = useDispatch();
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
   const [micStream, setMicStream] = useState<MediaStream | null>(null);
   const [mixedStream, setMixedStream] = useState<MediaStream | null>(null);
   const [recorder, setRecorder] = useState<MediaRecorder | null>(null);
 
+  //user info and channel info
+  const [thisUser, setThisUser] = useState<User>();
+  const [thisChannel, setThisChannel] = useState<Channel>();
+
+  //chat ref
+  const chatRef = useRef<HTMLDivElement>(null);
+
   //chat socket
   const [chatMesssages, setChatMessages] = useState<ChatMessageProps[]>([]);
   const [timeVideoStart, setTimeVideoStart] = useState<Date>(new Date());
   const [chatMessage, setChatMessage] = useState("");
-  const [thisUser, setThisUser] = useState<User | null>(
-    useAppSelector((state) => state.profile.user)
-  );
 
   // useEffect(() => {
   //   function onConnect() {
@@ -52,13 +58,36 @@ export default function Livestreaming() {
   // }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUser = async () => {
       await UserService.getInfo()
         .then((res) => {
-          setProfile(res);
           setThisUser(res);
         })
         .catch((err) => showErrorToast(err));
+    };
+    const fetchChannel = async () => {
+      await ChannelService.getChannel()
+        .then((res) => {
+          setThisChannel(res);
+        })
+        .catch((err) => showErrorToast(err));
+    };
+    // const checkStartStream = async (streamKey: string) => {
+    //   await UserService.startLiveStream(streamKey)
+    //     .then((res) => {
+    //       console.log("start stream", res);
+    //     })
+    //     .catch((err) => showErrorToast(err));
+    // };
+    // const checkEndStream = async (streamKey: string) => {
+    //   await UserService.stopLiveStream(streamKey)
+    //     .then((res) => {
+    //       console.log("end stream", res);
+    //     })
+    //     .catch((err) => showErrorToast(err));
+    // };
+    const fetchData = async () => {
+      await Promise.all([fetchUser(), fetchChannel()]);
     };
     fetchData();
   }, []);
@@ -135,6 +164,11 @@ export default function Livestreaming() {
 
     addMessages(newMessages);
   });
+
+  useEffect(() => {
+    if (chatRef.current)
+      chatRef.current.scrollTo(0, chatRef.current.scrollHeight);
+  }, [chatMesssages]);
 
   const setupStreams = async () => {
     const videoStream = await navigator.mediaDevices.getDisplayMedia({
@@ -250,7 +284,10 @@ export default function Livestreaming() {
         <div className="w-full flex flex-row justify-center mx-2 py-4 border-y">
           <span className="font-semibold text-primaryWord">STREAM CHAT</span>
         </div>
-        <div className="max-h-3/4 flex-1 flex-col items-start justify-start px-2 py-2 space-y-2 overflow-y-scroll">
+        <div
+          ref={chatRef}
+          className="max-h-3/4 flex-1 flex-col items-start justify-end px-2 py-2 space-y-2 overflow-y-scroll"
+        >
           {chatMesssages.map((message, index) => (
             <LivestreamChatMessage
               key={index}

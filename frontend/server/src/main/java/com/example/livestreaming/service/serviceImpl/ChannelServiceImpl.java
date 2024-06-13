@@ -3,8 +3,11 @@ package com.example.livestreaming.service.serviceImpl;
 import com.example.livestreaming.entity.Token;
 import com.example.livestreaming.entity.User;
 import com.example.livestreaming.mapper.ChannelMapper;
+import com.example.livestreaming.mapper.PublicChannelMapper;
 import com.example.livestreaming.mapper.UserMapper;
 import com.example.livestreaming.payload.ChannelDTO;
+import com.example.livestreaming.payload.CheckStreamKeyDTO;
+import com.example.livestreaming.payload.PublicChannelDTO;
 import com.example.livestreaming.payload.UserDTO;
 import com.example.livestreaming.repository.ChannelRepository;
 import com.example.livestreaming.repository.TokenRepository;
@@ -16,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,6 +57,11 @@ public class ChannelServiceImpl implements ChannelService {
         return user.getChannel().getStreamKey();
     }
     @Override
+    public ChannelDTO getChannel () {
+        var user = getAuthorizedUser();
+        return ChannelMapper.toChannelDTO(channelRepository.findByUserId(user.getId()).orElseThrow(() -> new RuntimeException("Channel not found")));
+    }
+    @Override
     public ChannelDTO updateChannel(ChannelDTO channelDTO) {
         var user = getAuthorizedUser();
         var channel = user.getChannel();
@@ -65,21 +74,22 @@ public class ChannelServiceImpl implements ChannelService {
         return channelDTO;
     }
     @Override
-    public ChannelDTO startLiveStream() {
-        var user = getAuthorizedUser();
-        var channel = user.getChannel();
+    public ChannelDTO startLiveStream(CheckStreamKeyDTO checkStreamKeyDTO) {
+        var channel = channelRepository.findByStreamKey(checkStreamKeyDTO.getStreamKey()).orElseThrow(() -> new RuntimeException("Channel not found"));
         channel.setLiveStreaming(true);
-        user.setChannel(channel);
-        userRepository.save(user);
+        channelRepository.save(channel);
         return ChannelMapper.toChannelDTO(channel);
     }
     @Override
-    public ChannelDTO stopLiveStream() {
-        var user = getAuthorizedUser();
-        var channel = user.getChannel();
+    public ChannelDTO stopLiveStream(CheckStreamKeyDTO checkStreamKeyDTO) {
+        var channel = channelRepository.findByStreamKey(checkStreamKeyDTO.getStreamKey()).orElseThrow(() -> new RuntimeException("Channel not found"));
         channel.setLiveStreaming(false);
-        user.setChannel(channel);
-        userRepository.save(user);
+        channelRepository.save(channel);
         return ChannelMapper.toChannelDTO(channel);
+    }
+
+    @Override
+    public List<PublicChannelDTO> getAllLiveChannels() {
+        return channelRepository.findAllLiveChannels().stream().map(PublicChannelMapper::toPublicChannelDTO).collect(Collectors.toList());
     }
 }

@@ -15,6 +15,7 @@ public class ChannelMapper {
                 .tags(channel.getTags())
                 .isLiveStreaming(channel.isLiveStreaming())
                 .enableLLHLS(channel.isEnableLLHLS())
+                .user(UserMapper.toUserDTO(channel.getUser()))
                 .build();
     }
 
@@ -27,6 +28,7 @@ public class ChannelMapper {
                 .tags(channelDTO.getTags())
                 .isLiveStreaming(channelDTO.isLiveStreaming())
                 .enableLLHLS(channelDTO.isEnableLLHLS())
+                .user(UserMapper.toUser(channelDTO.getUser()))
                 .build();
     }
 

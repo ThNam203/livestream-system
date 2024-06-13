@@ -9,7 +9,6 @@ export type User = {
   phoneNumber: string;
   password: string;
   birth: Date;
-  channel: Channel;
 };
 
 //some props will develop later

@@ -15,7 +15,6 @@ public class UserMapper {
                 .bio(user.getBio() == null ? "" : user.getBio())
                 .birth(user.getBirth())
                 .email(user.getEmail())
-                .channel(ChannelMapper.toChannelDTO(user.getChannel()))
                 .build();
     }
 
@@ -26,7 +25,6 @@ public class UserMapper {
                 .bio(userDTO.getBio())
                 .birth(userDTO.getBirth())
                 .email(userDTO.getEmail())
-                .channel(ChannelMapper.toChannel(userDTO.getChannel()))
                 .build();
     }
 }

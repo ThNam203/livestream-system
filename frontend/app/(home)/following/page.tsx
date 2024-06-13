@@ -12,7 +12,7 @@ import { Combobox, Option } from "@/components/ui/combobox";
 import { ArrowDownWideNarrow, ChevronDown, Sparkles, X } from "lucide-react";
 import { categories } from "@/fakedata/browse";
 import { cn } from "@/utils/cn";
-import { streamings } from "@/fakedata/leftbar";
+import { fakeChannels, streamings } from "@/fakedata/leftbar";
 import { CustomLink, Hover3DBox } from "@/components/ui/hover_3d_box";
 import { TagButton } from "@/components/ui/buttons";
 import { ClassValue } from "clsx";
@@ -188,7 +188,7 @@ export default function FollowingPage() {
           <div>
             <RecommendStreamingView
               title={<span>Live channels</span>}
-              streamings={streamings}
+              channels={fakeChannels}
               limitView={limitView[0]}
               separate={
                 <div className="w-full flex flex-row items-center justify-between gap-4">
@@ -207,7 +207,7 @@ export default function FollowingPage() {
 
             <RecommendStreamingView
               title={<span>Recommended channels</span>}
-              streamings={streamings}
+              channels={fakeChannels}
               limitView={limitView[1]}
               separate={
                 <div className="w-full flex flex-row items-center justify-between gap-4">
@@ -223,6 +223,44 @@ export default function FollowingPage() {
                 </div>
               }
             />
+          </div>
+        }
+      />
+
+      <TabContent
+        contentFor="Live"
+        selectedTab={selectedTab}
+        content={
+          <div className="h-40 flex items-center justify-center font-semibold text-2xl">
+            Coming soon!
+          </div>
+        }
+      />
+
+      <TabContent
+        contentFor="Videos"
+        selectedTab={selectedTab}
+        content={
+          <div className="h-40 flex items-center justify-center font-semibold text-2xl">
+            Coming soon!
+          </div>
+        }
+      />
+      <TabContent
+        contentFor="Categories"
+        selectedTab={selectedTab}
+        content={
+          <div className="h-40 flex items-center justify-center font-semibold text-2xl">
+            Coming soon!
+          </div>
+        }
+      />
+      <TabContent
+        contentFor="Channels"
+        selectedTab={selectedTab}
+        content={
+          <div className="h-40 flex items-center justify-center font-semibold text-2xl">
+            Coming soon!
           </div>
         }
       />

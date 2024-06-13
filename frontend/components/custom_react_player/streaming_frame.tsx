@@ -438,9 +438,9 @@ function VideoControlButtons({
         {/* <span className="text-white">
           {formatTime(currentTime)} / {formatTime(duration)}
         </span> */}
-        <div className="text-red-600 font-semibold">
+        <div className="flex items-center gap-2 text-red-600 font-semibold whitespace-nowrap">
           <div className="w-2 h-2 bg-red-600 rounded-full"></div>
-          Live
+          <div>Live</div>
         </div>
       </div>
 

@@ -64,7 +64,7 @@ export default function RegisterPage() {
       })
       .catch((err) => {
         console.log(err);
-        showErrorToast(err.response.data.message || "Sign Up Failed");
+        showErrorToast("Sign Up Failed");
       })
       .finally(() => {
         setIsSigningUp(false);

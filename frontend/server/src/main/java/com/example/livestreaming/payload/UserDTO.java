@@ -18,5 +18,4 @@ public class UserDTO {
     private String bio;
     private String birth;
     private String email;
-    private ChannelDTO channel;
 }

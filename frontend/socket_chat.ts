@@ -1,7 +1,6 @@
 import io from "socket.io-client";
-import { ChatRoomProps } from "./entities/chatMessage";
 
-const socket_chat = io("http://localhost:8080/chat", {
+const socket_chat = io("http://localhost:3333/chat", {
   withCredentials: true,
   transports: ["websocket"],
 });

@@ -10,7 +10,6 @@ export const UserToReceive = (data: any) => {
     phoneNumber: data.phoneNumber,
     password: data.password,
     birth: new Date(data.birth),
-    channel: data.channel,
   };
   return user;
 };
@@ -25,7 +24,6 @@ export const UserToSend = (data: User) => {
     phoneNumber: data.phoneNumber,
     password: data.password,
     birth: data.birth.toISOString(),
-    channel: data.channel,
   };
   return user;
 };

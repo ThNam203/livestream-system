@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export type Streaming = {
   id: any;
   ownerId: any;
@@ -16,4 +18,6 @@ export type Channel = {
   tags: string[];
   streamKey: string;
   enableLLHLS: boolean;
+  user: User;
+  liveStreaming: boolean;
 };

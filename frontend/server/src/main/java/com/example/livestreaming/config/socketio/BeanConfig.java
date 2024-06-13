@@ -134,11 +134,11 @@ public class BeanConfig {
                     }
 
                     if(shouldRemoveRoom) {
+                        socket.broadcast(roomId.toString(),"message", Json.toJsonObj(ChatMapper.toChatMessageDTO(ChatMessage.builder().roomId(roomId).sender("server").time(new Date()).message(username + " left the chat room.").type(MessageType.LEAVE).build())));
                         socket.broadcast(roomId.toString(),"disconnect");
                         chatRooms.remove(room);
                     }
                 });
-                socket.broadcast(roomId.toString(),"message", Json.toJsonObj(ChatMapper.toChatMessageDTO(ChatMessage.builder().roomId(roomId).sender("server").time(new Date()).message(username + " left the chat room.").type(MessageType.LEAVE).build())));
             });
 
             socket.on("message", args1 -> {

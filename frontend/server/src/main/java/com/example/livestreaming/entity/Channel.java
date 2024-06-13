@@ -27,6 +27,7 @@ public class Channel {
     private boolean isLiveStreaming;
     private boolean enableLLHLS;
 
-    @OneToOne(mappedBy = "channel")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 }

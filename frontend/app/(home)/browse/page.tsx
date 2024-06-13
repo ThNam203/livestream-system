@@ -241,6 +241,16 @@ export default function BrowsePage() {
           </div>
         }
       />
+
+      <TabContent
+        contentFor="Live channels"
+        selectedTab={selectedTab}
+        content={
+          <div className="h-40 flex items-center justify-center font-semibold text-2xl">
+            Coming soon!
+          </div>
+        }
+      />
     </div>
   );
 }

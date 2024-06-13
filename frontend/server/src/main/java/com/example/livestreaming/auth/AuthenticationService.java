@@ -39,25 +39,23 @@ public class AuthenticationService {
 
     public UserDTO register (RegisterDTO request, HttpServletResponse response) {
         try {
-            var channel = Channel.builder()
-                    .streamKey(keyGenerationService.generateStreamKey())
-                    .channelName(request.getUsername())
-                    .title("")
-                    .tags(List.of())
-                    .build();
-            channelRepository.save(channel);
-            var newChannel = channelRepository.findByChannelName(channel.getChannelName()).orElseThrow(() -> new RuntimeException("Failed to create channel"));
-
             var user = User.builder()
                     .username(request.getUsername())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .birth(request.getBirth())
                     .email(request.getEmail())
                     .role(Role.USER)
-                    .channel(newChannel)
                     .build();
 
             userRepository.save(user);
+            var channel = Channel.builder()
+                    .streamKey(keyGenerationService.generateStreamKey())
+                    .channelName(request.getUsername())
+                    .title("I'm streaming now")
+                    .tags(List.of())
+                    .user(user)
+                    .build();
+            channelRepository.save(channel);
 
             var jwt = jwtService.generateToken(user);
             revokeAllUserTokens(user);
