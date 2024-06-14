@@ -6,5 +6,5 @@ export default function ReactPlayerWrapper(
     playerRef: LegacyRef<ReactPlayer>;
   }
 ) {
-  return <ReactPlayer ref={props.playerref} {...props} />;
+  return <ReactPlayer ref={props.playerRef} {...props} />;
 }
